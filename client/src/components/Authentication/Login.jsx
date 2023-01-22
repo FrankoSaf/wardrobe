@@ -1,10 +1,18 @@
 import React, { useState } from "react";
-
-const Login = ({ onChangeHandler }) => {
+import { useDispatch, useSelector } from "react-redux";
+import { regOrLogUser } from "../../store/authAction";
+const Login = ({ onChangeHandler, onSubmitHandler }) => {
   const [logInputArr, setLogInputArr] = useState({});
-  console.log(logInputArr);
+  const dispatch = useDispatch();
+
   return (
-    <form>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        const loginData = { ...logInputArr, action: "login" };
+        dispatch(regOrLogUser(loginData));
+      }}
+    >
       <div className="">
         <label htmlFor="email">Email</label>
         <input

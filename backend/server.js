@@ -4,6 +4,8 @@ const MySQLStore = require("express-mysql-session")(session);
 var cors = require("cors");
 require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
+const wardrobeRoutes = require("./routes/wardrobeRoutes");
+const { isVerified } = require("./middlewares/userVerified");
 const app = express();
 
 app.use(express.json());
@@ -26,7 +28,7 @@ app.use(
   })
 );
 app.use("/auth", authRoutes);
-
+app.use("/wardrobe",isVerified, wardrobeRoutes);
 app.use((err, req, res, next) => {
   const { message = "Something went wrong", status = 500 } = err;
   res.status(status).send(message);

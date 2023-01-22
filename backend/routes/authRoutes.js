@@ -21,7 +21,7 @@ router.post(
 router.post("/login", loginValidationSchema, schemaValidation, loginController);
 
 router.get("/verify/:id", emailVerificationController);
-router.get("/check", isVerified, (req, res) => {
-  res.send("hi");
+router.get("/verify", (req, res) => {
+  res.send("Verify your account first");
 });
 module.exports = router;

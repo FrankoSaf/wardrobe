@@ -71,6 +71,7 @@ exports.emailVerificationController = async (req, res, next) => {
         .promise()
         .execute("SELECT * FROM users WHERE id = ?", [userId]);
       req.session.user = updatedUser[0];
+      console.log(req.session.user);
       res.send("You are verified");
     }
   } catch (e) {

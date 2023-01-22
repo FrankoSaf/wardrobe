@@ -1,10 +1,18 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { regOrLogUser } from "../../store/authAction";
 
-const Registration = ({ onChangeHandler }) => {
+const Registration = ({ onChangeHandler, onSubmitHandler }) => {
   const [regInputArr, setRegInputArr] = useState({});
-  console.log(regInputArr);
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
   return (
-    <form>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        dispatch(regOrLogUser({ ...regInputArr, action: "register" }));
+      }}
+    >
       <div className="">
         <label htmlFor="first_name">First name</label>
         <input

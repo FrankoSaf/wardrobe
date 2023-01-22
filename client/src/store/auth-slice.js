@@ -1,20 +1,31 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { regOrLogUser } from "./authAction";
 
-const initialState = {
-  isLoggedIn: false,
-};
 const authSlice = createSlice({
   name: "auth",
-  initialState: initialState,
-  reducers: {
-    login(state) {
-      state.isLoggedIn = true;
-    },
-    logOff(state) {
-      state.isLoggedIn = false;
-    },
+  initialState: {
+    user: null,
+    error: null,
+    isLoading: false,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(regOrLogUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(regOrLogUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+
+        state.user = action.payload;
+      })
+      .addCase(regOrLogUser.rejected, (state, action) => {
+   
+        state.isLoading = false;
+        state.error = action.payload;
+      });
   },
 });
 
-export const authActions = authSlice.actions;
+export const {} = authSlice.actions;
 export default authSlice.reducer;
