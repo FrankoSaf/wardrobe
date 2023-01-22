@@ -5,6 +5,7 @@ var cors = require("cors");
 require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 const wardrobeRoutes = require("./routes/wardrobeRoutes");
+const outfitRoutes = require("./routes/outfitRoutes");
 const { isVerified } = require("./middlewares/userVerified");
 const app = express();
 
@@ -29,9 +30,10 @@ app.use(
 );
 app.use("/auth", authRoutes);
 app.use("/wardrobe",isVerified, wardrobeRoutes);
+app.use('/outfits',outfitRoutes)
 app.use((err, req, res, next) => {
   const { message = "Something went wrong", status = 500 } = err;
-  res.status(message).send(status);
+  res.status(status).send(message);
 });
 app.listen(process.env.PORT, () => {
   console.log("Server is listening on port " + process.env.PORT);

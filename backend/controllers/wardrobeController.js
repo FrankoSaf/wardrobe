@@ -142,6 +142,34 @@ exports.updatedClothController = async (req, res, next) => {
     }
     res.send("Updated");
   } catch (e) {
-    throw new ExpressError(300, "Failed ");
+    next(new ExpressError(300, "Failed "));
+  }
+};
+exports.addPieceToCollections = async (req, res, next) => {
+  try {
+    const checkStmt = "SELECT user_id FROM clothes WHERE clothes.id=?";
+    const [combinationData] = await con
+      .promise()
+      .execute(checkStmt, [req.body.clothesId]);
+    if (combinationData[0].user_id !== req.session.user.id) {
+      return next(new ExpressError("You can't add to this collection", 300));
+    }
+    const checkStmt2 =
+      "SELECT * FROM clothes_combination WHERE combination_id=?";
+    const [combinationData2] = await con
+      .promise()
+      .execute(checkStmt2, [req.body.combinationId]);
+  
+    if (combinationData2.some((item) => item.cloth_id === req.body.clothesId)) {
+      return next(new ExpressError("Piece already inside"));
+    }
+    const addStmt =
+      "INSERT INTO clothes_combination (combination_id,cloth_id)VALUES(?,?)";
+    await con
+      .promise()
+      .execute(addStmt, [req.body.combinationId, req.body.clothesId]);
+    res.send("Piece added to collection");
+  } catch (e) {
+    next(new ExpressError("Something went wrong", 300));
   }
 };
