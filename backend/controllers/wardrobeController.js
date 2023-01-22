@@ -41,3 +41,19 @@ exports.addNewPiece = async (req, res) => {
     res.send(e);
   }
 };
+
+exports.filterClothes = async (req, res) => {
+  try {
+    let filterStmt = `SELECT * FROM clothes WHERE user_id =?`;
+    if (cloth.type.length > 0) {
+      const types = req.body.type;
+      query += "AND type IN(";
+      types.forEach((type, index) => {
+        filterStmt += "?";
+        if (index < types.length - 1) {
+          filterStmt += ",";
+        }
+      });
+    }
+  } catch (e) {}
+};
