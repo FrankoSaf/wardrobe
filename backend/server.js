@@ -31,7 +31,7 @@ app.use("/auth", authRoutes);
 app.use("/wardrobe",isVerified, wardrobeRoutes);
 app.use((err, req, res, next) => {
   const { message = "Something went wrong", status = 500 } = err;
-  res.status(status).send(message);
+  res.status(message).send(status);
 });
 app.listen(process.env.PORT, () => {
   console.log("Server is listening on port " + process.env.PORT);
