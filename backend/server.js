@@ -30,7 +30,7 @@ app.use(
 );
 app.use("/auth", authRoutes);
 app.use("/wardrobe",isVerified, wardrobeRoutes);
-app.use('/outfits',outfitRoutes)
+app.use('/outfits',isVerified,outfitRoutes)
 app.use((err, req, res, next) => {
   const { message = "Something went wrong", status = 500 } = err;
   res.status(status).send(message);

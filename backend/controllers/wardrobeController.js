@@ -159,7 +159,7 @@ exports.addPieceToCollections = async (req, res, next) => {
     const [combinationData2] = await con
       .promise()
       .execute(checkStmt2, [req.body.combinationId]);
-  
+
     if (combinationData2.some((item) => item.cloth_id === req.body.clothesId)) {
       return next(new ExpressError("Piece already inside"));
     }
@@ -169,6 +169,24 @@ exports.addPieceToCollections = async (req, res, next) => {
       .promise()
       .execute(addStmt, [req.body.combinationId, req.body.clothesId]);
     res.send("Piece added to collection");
+  } catch (e) {
+    next(new ExpressError("Something went wrong", 300));
+  }
+};
+
+exports.addPieceToFavorite = async (req, res, next) => {
+  try {
+    const { favorite, clothesId } = req.body;
+    console.log(clothesId, favorite, req.session.user.id);
+    const updtStmt = "UPDATE clothes SET favorite=? WHERE id=? AND user_id=?";
+    const [data] = await con
+      .promise()
+      .execute(updtStmt, [favorite, clothesId, req.session.user.id]);
+    if (data.affectedRows === 0) {
+      return next(new ExpressError("Something went wrong",300))
+    } else {
+      res.send('Updated successfully');
+    }
   } catch (e) {
     next(new ExpressError("Something went wrong", 300));
   }

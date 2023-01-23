@@ -2,6 +2,9 @@ const ExpressError = require("../ExpressError");
 const con = require("../models/db");
 exports.isVerified = async (req, res, next) => {
   try {
+    if (!req.session.user) {
+      return next(new ExpressError("Please login or Register", 300));
+    }
     const checkStmt =
       "SELECT id,email,email_verified,first_name,last_name FROM users WHERE email=? ;";
     const [userCheck] = await con
@@ -14,6 +17,6 @@ exports.isVerified = async (req, res, next) => {
       res.redirect("/auth/verify");
     }
   } catch (err) {
-    throw new ExpressError(500, "Something went wrong");
+    throw new ExpressError("Something went wrong", 500);
   }
 };

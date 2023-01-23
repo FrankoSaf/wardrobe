@@ -7,6 +7,7 @@ const {
   cleanStatusController,
   deleteClothController,
   updatedClothController,
+  addPieceToFavorite,
 } = require("../controllers/wardrobeController");
 const { clothesValidation } = require("../schema/clothesValidation");
 const { schemaValidation } = require("../schema/schemaValidation");
@@ -16,4 +17,5 @@ router.post("/clothes/filter", filterClothes);
 router.put("/clothes/cleanstatus", cleanStatusController);
 router.delete("/clothes/delete", deleteClothController);
 router.put('/clothes/update',updatedClothController)
+router.put('/clothes/favorite',addPieceToFavorite)
 module.exports = router;

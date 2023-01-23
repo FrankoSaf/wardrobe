@@ -1,19 +1,18 @@
 const ExpressError = require("../ExpressError");
 const con = require("../models/db");
 
-exports.createNewCombination = async (req, res, next) => {
+exports.createNewOutfit = async (req, res, next) => {
   try {
     const checkStmt =
       "SELECT combination_name FROM combination WHERE combination_name=? AND user_id=?";
     const [checkStatus] = await con
       .promise()
-      .execute(checkStmt, [
-        req.body.combinationName,
-        req.session.user.id,
-      ]);
+      .execute(checkStmt, [req.body.combinationName, req.session.user.id]);
     if (
       checkStatus.some(
-        (item) => item.combination_name.toLowerCase() === req.body.combinationName.toLowerCase()
+        (item) =>
+          item.combination_name.toLowerCase() ===
+          req.body.combinationName.toLowerCase()
       )
     ) {
       return next(new ExpressError("You have outfit with the same name"));
@@ -40,5 +39,39 @@ exports.showAllOutfitsController = async (req, res, next) => {
     res.send("yahoo");
   } catch (e) {
     next(new ExpressError(300, "Something went wrong"));
+  }
+};
+
+exports.deleteOutfitController = async (req, res, next) => {
+  const { outfitId } = req.body;
+  console.log(req.session.user.id);
+  try {
+    const deleteStmt = "DELETE FROM combination WHERE user_id=? AND id=?";
+    const [data] = await con
+      .promise()
+      .execute(deleteStmt, [req.session.user.id, outfitId]);
+    if (data.affectedRows === 0) {
+      return next(new ExpressError("Unable to delete outfit", 300));
+    }
+    res.send("Outfit deleted");
+  } catch (e) {
+    next(new ExpressError("Unable to delete outfit, try again later", 300));
+  }
+};
+
+exports.addOutfitToFavorite = async (req, res, next) => {
+  try {
+    const { outfitId, favorite } = req.body;
+    const updtStmt =
+      "UPDATE combination SET favorite=? WHERE id=? AND user_id=?";
+    const [data] = await con
+      .promise()
+      .execute(updtStmt, [favorite, outfitId, req.session.user.id]);
+    if (data.affectedRows === 0) {
+      return next(new ExpressError("Something went wrong", 300));
+    }
+    res.send("Added outfit to favorites");
+  } catch (e) {
+    next(new ExpressError("Something went wrong", 300));
   }
 };
