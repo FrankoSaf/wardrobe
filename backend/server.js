@@ -6,6 +6,7 @@ require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 const wardrobeRoutes = require("./routes/wardrobeRoutes");
 const outfitRoutes = require("./routes/outfitRoutes");
+const groupRoutes = require("./routes/groupRoutes");
 const { isVerified } = require("./middlewares/userVerified");
 const app = express();
 
@@ -29,8 +30,9 @@ app.use(
   })
 );
 app.use("/auth", authRoutes);
-app.use("/wardrobe",isVerified, wardrobeRoutes);
-app.use('/outfits',isVerified,outfitRoutes)
+app.use("/wardrobe", isVerified, wardrobeRoutes);
+app.use("/outfits", isVerified, outfitRoutes);
+app.use("/group", isVerified, groupRoutes);
 app.use((err, req, res, next) => {
   const { message = "Something went wrong", status = 500 } = err;
   res.status(status).send(message);

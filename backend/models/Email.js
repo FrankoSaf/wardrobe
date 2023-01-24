@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const ExpressError = require("../ExpressError");
-
+const bcrypt = require("bcrypt");
 let transporter = nodemailer.createTransport({
   host: "smtp-mail.outlook.com",
   port: 587,
@@ -27,4 +27,19 @@ const emailSender = async (mailTo, userId) => {
   }
 };
 
-module.exports = { emailSender };
+const invitationSender = async (mailTo, firstName, groupCode, receiverName) => {
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(groupCode, salt);
+    await transporter.sendMail({
+      from: "You received group invitation <franko.safradin@hotmail.com",
+      to: mailTo,
+      subject: "Please accept or ignore invitation",
+      text: `${firstName} sent you an invite to their Wardrobe group`,
+      html: `<p>Hi ${receiverName}, please accept an invitation and join our outfit group <a href="http://localhost:5000/api/group/join/${hash}">link</a>`,
+    });
+  } catch (err) {
+    throw new ExpressError(err);
+  }
+};
+module.exports = { emailSender, invitationSender };
